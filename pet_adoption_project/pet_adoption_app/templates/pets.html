@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div>
+        <style>
+            h1 {text-align: center;}
+            p {text-align: center;}
+        </style>
+        <h1> All pets </h1>
+        <p> There you can find a whole list of our pets </p>
+        <br/>
+
+        {% for pet in pets %}
+            <div class="petname">
+                <a href="{% url 'pet_detail' pet.id %}">
+                <h3>{{ pet.name|capfirst }}</h3>
+                </a>
+                <p class="hidden">{{ pet.description }}</p>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
