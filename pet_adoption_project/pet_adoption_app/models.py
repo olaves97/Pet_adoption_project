@@ -24,11 +24,19 @@ class Pet(models.Model):
     vaccinations = models.ManyToManyField('Vaccine', blank=True)
 
 
-
-
 class Vaccine(models.Model):
     name = models.CharField(max_length=50)
 
     def __str__(self):
         return self.name
 
+
+class Questions(models.Model):
+    question = models.CharField(max_length=200, null=True)
+    first_option = models.CharField(max_length=200, null=True)
+    second_option = models.CharField(max_length=200, null=True)
+    third_option = models.CharField(max_length=200, null=True)
+    fourth_option = models.CharField(max_length=200, null=True)
+
+    def __str__(self):
+        return self.question

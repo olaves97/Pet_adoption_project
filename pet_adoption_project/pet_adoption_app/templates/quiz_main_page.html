@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div>
+        <style>
+            h1 {text-align: center;}
+        </style>
+        <h1> Quiz </h1>
+        <p align="center"> Take a short quiz to find out which of our pets will be the perfect match for you! </p>
+        <br/>
+        <br/>
+        <br/>
+        <form method="post">
+          <fieldset class="form-group">
+              {% for question in questions %}
+              <section class="questions">
+               <h3>{{question.question|capfirst }}</h3>
+              </section>
+            <div class="row">
+              <div class="col-sm-10">
+                <div class="form-check">
+                    {% if question.first_option %}
+                  <input class="form-check-input" type="radio" name={{question.id}} id="gridRadios1" value="option1" checked>
+                  <label class="form-check-label" for="gridRadios1">
+                        {{ question.first_option }}
+                  </label>
+                    {% endif %}
+                </div>
+                  <div class="form-check">
+                      {% if question.second_option %}
+                  <input class="form-check-input" type="radio" name={{question.id}} id="gridRadios2">
+                  <label class="form-check-label" for="gridRadios2">
+                        {{ question.second_option }}
+                  </label>
+                      {% endif %}
+                </div>
+                  <div class="form-check">
+                      {% if question.third_option %}
+                  <input class="form-check-input" type="radio" name={{question.id}} id="gridRadios3">
+                  <label class="form-check-label" for="gridRadios3">
+                       {{ question.third_option }}
+                  </label>
+                      {% endif %}
+                </div>
+                  <div class="form-check">
+                      {% if question.fourth_option %}
+                  <input class="form-check-input" type="radio" name={{question.id}} id="gridRadios4">
+                  <label class="form-check-label" for="gridRadios4">
+                        {{ question.fourth_option }}
+                  </label>
+                      {% endif %}
+                </div>
+              </div>
+            </div>
+              <br/>
+              <br/>
+              {% endfor %}
+          </fieldset>
+        </form>
+    </div>
+{% endblock %}
