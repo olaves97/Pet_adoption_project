@@ -31,12 +31,19 @@ class Vaccine(models.Model):
         return self.name
 
 
-class Questions(models.Model):
-    question = models.CharField(max_length=200, null=True)
+class Question(models.Model):
+    question_text = models.CharField(max_length=200, null=True)
     first_option = models.CharField(max_length=200, null=True)
     second_option = models.CharField(max_length=200, null=True)
     third_option = models.CharField(max_length=200, null=True)
     fourth_option = models.CharField(max_length=200, null=True)
 
     def __str__(self):
-        return self.question
+        return self.question_text
+
+
+# class Answer(models.Model):
+#     answer = models.OneToOneField('Questions', on_delete=models.CASCADE, primary_key=True)
+#
+#     def __str__(self):
+#         return self.answer

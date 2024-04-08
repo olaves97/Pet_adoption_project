@@ -1,8 +1,8 @@
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import render
 
 from .database_creation import initialize_data, initialize_questions
-from .models import Pet, Questions
+from .models import Pet, Question
 
 
 def home(request):
@@ -19,10 +19,26 @@ def pets(request):
 
 
 def quiz(request):
-    question_objs = Questions.objects.all()
+    question_objs = Question.objects.all()
     return render(request, 'quiz_main_page.html', {
         'questions': question_objs,
         })
+
+
+def submit_form(request):
+    if request.method == 'POST':
+        responses = {}
+        for key, value in request.POST.items():
+            responses[key] = value
+            print(value)
+
+        del responses["csrfmiddlewaretoken"]
+        print(responses)
+        return render(request, 'quiz_results.html', {
+            'responses': responses,
+        })
+    else:
+        return HttpResponse("Form submission method is not POST.")
 
 
 def pet_detail(request, pet_id):
