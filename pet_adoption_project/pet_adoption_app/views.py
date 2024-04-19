@@ -3,6 +3,7 @@ from django.shortcuts import render
 
 from .database_creation import initialize_data, initialize_questions
 from .models import Pet, Question
+from .search_pet_database import search_database
 
 
 def home(request):
@@ -27,13 +28,14 @@ def quiz(request):
 
 def submit_form(request):
     if request.method == 'POST':
-        responses = {}
-        for key, value in request.POST.items():
-            responses[key] = value
-            print(value)
+        responses = []
+        for value in request.POST.items():
+            responses.append(list(value))
 
-        del responses["csrfmiddlewaretoken"]
-        print(responses)
+        del responses[0]
+
+        search_database(responses)
+
         return render(request, 'quiz_results.html', {
             'responses': responses,
         })

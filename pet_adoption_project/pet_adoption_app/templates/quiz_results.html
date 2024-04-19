@@ -9,10 +9,20 @@
         <br/>
         <br/>
         <br/>
-              {% for question_id, response in responses.items %}
-                <p>Question {{ question_id }}: {{ response }}</p>
-              <br/>
-              <br/>
-              {% endfor %}
+            <ul>
+                {% for response in responses %}
+                    <li> Question {{ forloop.counter }}: {{ response.1 }} </li>
+                    <br/>
+                    <br/>
+                {% endfor %}
+            </ul>
+<!--        {% for pet in pets %}-->
+<!--            <div class="petname">-->
+<!--                <a href="{% url 'pet_detail' pet.id %}">-->
+<!--                <h3>{{ pet.name|capfirst }}</h3>-->
+<!--                </a>-->
+<!--                <p class="hidden">{{ pet.description }}</p>-->
+<!--            </div>-->
+<!--        {% endfor %}-->
     </div>
 {% endblock %}
