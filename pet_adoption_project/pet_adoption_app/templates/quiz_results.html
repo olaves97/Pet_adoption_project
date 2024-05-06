@@ -6,23 +6,47 @@
         </style>
         <h1> Results </h1>
         <p align="center"> Take a look at your results! </p>
+        <p align="center"> Congratulations! We found the perfect dogs for you! </p>
         <br/>
         <br/>
         <br/>
-            <ul>
-                {% for response in responses %}
-                    <li> Question {{ forloop.counter }}: {{ response.1 }} </li>
-                    <br/>
-                    <br/>
-                {% endfor %}
-            </ul>
-<!--        {% for pet in pets %}-->
-<!--            <div class="petname">-->
-<!--                <a href="{% url 'pet_detail' pet.id %}">-->
-<!--                <h3>{{ pet.name|capfirst }}</h3>-->
-<!--                </a>-->
-<!--                <p class="hidden">{{ pet.description }}</p>-->
-<!--            </div>-->
-<!--        {% endfor %}-->
+        {% for pet in matched_pets %}
+            <div class="petname">
+                <a href="{% url 'pet_detail' pet.id %}">
+                <h3>{{ pet.name|capfirst }}</h3>
+                </a>
+                <p>Size: {{ pet.size }}</p>
+                {% if pet.age %}
+                    <p>Age: {{ pet.age }}</p>
+                {% endif %}
+                {% if pet.sex %}
+                    <p>Sex: {{ pet.sex }}</p>
+                {% endif %}
+                {% if pet.breed %}
+                    <p>Breed: {{ pet.breed }}</p>
+                {% endif %}
+                {% if pet.temperament %}
+                    <p>Temperament: {{ pet.temperament }}</p>
+                {% endif %}
+                {% if pet.personality %}
+                    <p>Personality: {{ pet.personality }}</p>
+                {% endif %}
+                {% if pet.kid_friendly %}
+                    <p>Kid friendly: {{ pet.kid_friendly}}</p>
+                {% endif %}
+                {% if pet.dog_friendly %}
+                    <p>Dog friendly: {{ pet.dog_friendly }}</p>
+                {% endif %}
+                {% if pet.cat_friendly %}
+                    <p>Cat friendly: {{ pet.cat_friendly }}</p>
+                {% endif %}
+                {% if pet.neutered %}
+                    <p>Neutered: {{ pet.neutered }}</p>
+                {% endif %}
+            </div>
+        <br/>
+        <br/>
+        {% endfor %}
+
     </div>
 {% endblock %}

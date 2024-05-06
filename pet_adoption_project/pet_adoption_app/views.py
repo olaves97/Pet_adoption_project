@@ -1,14 +1,15 @@
-from django.http import Http404, HttpResponse
+from django.http import Http404
 from django.shortcuts import render
 
-from .database_creation import initialize_data, initialize_questions
 from .models import Pet, Question
-from .search_pet_database import search_database
+from .quiz_functions import QuizManager
+
+
+PARAMETERS = ['size', 'age', 'sex', 'breed', 'temperament', 'personality', 'kid_friendly', 'dog_friendly',
+              'cat_friendly', 'neutered']
 
 
 def home(request):
-    # initialize_data()
-    # initialize_questions()
     return render(request, 'home.html', {})
 
 
@@ -23,24 +24,28 @@ def quiz(request):
     question_objs = Question.objects.all()
     return render(request, 'quiz_main_page.html', {
         'questions': question_objs,
-        })
+    })
+
+
+class TooFewAnswers(Exception):
+    pass
 
 
 def submit_form(request):
-    if request.method == 'POST':
-        responses = []
-        for value in request.POST.items():
-            responses.append(list(value))
+    responses = QuizManager().prepare_a_list_of_responses(request)
 
-        del responses[0]
+    try:
+        if len(responses) == len(PARAMETERS):
+            top_three_dogs = QuizManager().search_database(responses, PARAMETERS)
+            matched_pets = QuizManager().find_three_best_dogs_ids(top_three_dogs)
+            return render(request, 'quiz_results.html', {
+                'matched_pets': matched_pets,
+            })
+        else:
+            raise TooFewAnswers
 
-        search_database(responses)
-
-        return render(request, 'quiz_results.html', {
-            'responses': responses,
-        })
-    else:
-        return HttpResponse("Form submission method is not POST.")
+    except TooFewAnswers:
+        raise Http404("Too few answers were given.")
 
 
 def pet_detail(request, pet_id):
