@@ -13,7 +13,7 @@ The page contains four tabs:
 - Pets - a list of all available pets for adoption
 - Login - login page for users and moderators **[in progress]**
 
-After answering the questions, a page appears with the three animals taht best suit users' preferences.
+After answering the questions, a page appears with the three animals that best suit users' preferences.
 
 
 ## Used technologies
