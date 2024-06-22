@@ -27,5 +27,7 @@ urlpatterns = [
     path('quiz', views.quiz, name='quiz_main_page'),
     path('pets/<int:pet_id>/', views.pet_detail, name='pet_detail'),
     path('quiz/results/', views.submit_form, name='quiz_results'),
-    path('', include('django.contrib.auth.urls'))
+    path('', include('django.contrib.auth.urls')),
+    path('sign-up', views.sign_up, name='sign_up'),
+    path('moderator/', views.moderator_dashboard, name='moderator_dashboard'),
 ]

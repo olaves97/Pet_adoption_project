@@ -1,8 +1,12 @@
+from django.contrib.auth.decorators import user_passes_test
 from django.http import Http404
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
+from .forms import RegisterForm
 from .models import Pet, Question
 from .quiz_functions import QuizManager
+
+from django.contrib.auth import login
 
 
 PARAMETERS = ['size', 'age', 'sex', 'breed', 'temperament', 'personality', 'kid_friendly', 'dog_friendly',
@@ -54,3 +58,21 @@ def pet_detail(request, pet_id):
     except Pet.DoesNotExist:
         raise Http404("Pet not found")
     return render(request, 'pet_detail.html', {'pet': pet})
+
+
+def sign_up(request):
+    if request.method == 'POST':
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('/home')
+    else:
+        form = RegisterForm()
+
+    return render(request, 'registration/sign_up.html/', {'form': form})
+
+
+@user_passes_test(lambda u: u.groups.filter(name='Moderators').exists())
+def moderator_dashboard(request):
+    return render(request, 'moderator_dashboard.html')
