@@ -30,4 +30,7 @@ urlpatterns = [
     path('', include('django.contrib.auth.urls')),
     path('sign-up', views.sign_up, name='sign_up'),
     path('moderator/', views.moderator_dashboard, name='moderator_dashboard'),
+    path('create', views.create, name='create'),
+    path('edit/<int:pet_id>/', views.edit, name='edit'),
+    path('delete/<int:pet_id>/', views.delete, name='delete'),
 ]

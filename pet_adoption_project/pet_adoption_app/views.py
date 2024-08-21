@@ -1,8 +1,8 @@
 from django.contrib.auth.decorators import user_passes_test
 from django.http import Http404
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 
-from .forms import RegisterForm
+from .forms import RegisterForm, PetInDatabase
 from .models import Pet, Question
 from .quiz_functions import QuizManager
 
@@ -75,4 +75,30 @@ def sign_up(request):
 
 @user_passes_test(lambda u: u.groups.filter(name='Moderators').exists())
 def moderator_dashboard(request):
-    return render(request, 'moderator_dashboard.html')
+    database_table = Pet.objects.all()
+    return render(request, 'moderator_dashboard.html', {'database_table': database_table})
+
+
+def edit(request, pet_id):
+    pet = get_object_or_404(Pet, pk=pet_id)
+    if request.method == "POST":
+        formset = PetInDatabase(request.POST, instance=pet)
+        if formset.is_valid():
+            formset.save()
+            return redirect('moderator_dashboard.html')
+    else:
+        formset = PetInDatabase(instance=pet)
+
+    return render(request, 'database_actions/edit.html', {'formset': formset})
+
+
+def create(request):
+    return render(request, 'database_actions/create.html', {})
+
+
+def delete(request, pet_id):
+    pet = Pet.objects.get(id=pet_id)
+    pet.delete()
+    database_table = Pet.objects.all()
+    return render(request, 'moderator_dashboard.html', {'database_table': database_table})
+

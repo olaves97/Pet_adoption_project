@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block content %}
+<head>
+    <title>Edit</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h1>Edit</h1>
+    <form method="post">
+        {% csrf_token %}
+        <table>
+                <tr>
+                    <th>Pet Name</th>
+                    <th>Breed</th>
+                    <th>Age</th>
+                    <th>Sex</th>
+                    <th>Size</th>
+                    <th>Temperament</th>
+                    <th>Personality</th>
+                    <th>Kid-friendly</th>
+                    <th>Dog-friendly</th>
+                    <th>Cat-friendly</th>
+                    <th>Neutered</th>
+                    <th>Submitter</th>
+                    <th>Submission date</th>
+                    <th>Vaccinations</th>
+                </tr>
+            <tbody>
+            <tr>
+                <td>{{ formset.name }}</td>
+                <td>{{ formset.breed }}</td>
+                <td>{{ formset.age }}</td>
+                <td>{{ formset.sex }}</td>
+                <td>{{ formset.size }}</td>
+                <td>{{ formset.temperament }}</td>
+                <td>{{ formset.personality }}</td>
+                <td>{{ formset.kid_friendly }}</td>
+                <td>{{ formset.dog_friendly }}</td>
+                <td>{{ formset.cat_friendly }}</td>
+                <td>{{ formset.neutered }}</td>
+                <td>{{ formset.submitter }}</td>
+                <td>{{ formset.submission_date }}</td>
+                <td>{{ formset.vaccinations }}</td>
+            </tr>
+            </tbody>
+        </table>
+        <div style="text-align: center;">
+            <button type="submit" class="btn btn-success">Save changes</button>
+        </div>
+    </form>
+    <a href="{% url 'moderator_dashboard' %}">Back to list</a>
+</body>
+{% endblock %}
