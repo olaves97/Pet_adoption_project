@@ -85,7 +85,7 @@ def edit(request, pet_id):
         formset = PetInDatabase(request.POST, instance=pet)
         if formset.is_valid():
             formset.save()
-            return redirect('moderator_dashboard.html')
+            return redirect('/moderator')
     else:
         formset = PetInDatabase(instance=pet)
 
