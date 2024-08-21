@@ -92,8 +92,15 @@ def edit(request, pet_id):
     return render(request, 'database_actions/edit.html', {'formset': formset})
 
 
-def create(request):
-    return render(request, 'database_actions/create.html', {})
+def create_a_record(request):
+    if request.method == "POST":
+        formset = PetInDatabase(request.POST)
+        if formset.is_valid():
+            formset.save()
+            return redirect('/moderator')
+    else:
+        formset = PetInDatabase()
+    return render(request, 'database_actions/create.html', {'formset': formset})
 
 
 def delete(request, pet_id):
