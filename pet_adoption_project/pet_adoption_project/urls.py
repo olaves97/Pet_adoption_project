@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 
 from pet_adoption_app import views
+from pet_adoption_app.views import PetDeleteView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -32,5 +33,5 @@ urlpatterns = [
     path('moderator/', views.moderator_dashboard, name='moderator_dashboard'),
     path('create', views.create_a_record, name='create'),
     path('edit/<int:pet_id>/', views.edit, name='edit'),
-    path('delete/<int:pet_id>/', views.delete, name='delete'),
+    path('pet/<int:pk>/delete/', PetDeleteView.as_view(), name='pet_delete'),
 ]

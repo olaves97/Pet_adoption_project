@@ -51,7 +51,7 @@
             </td>
              <td>
                 <a href="{% url 'edit' pet.id %}"><span class="glyphicon glyphicon-pencil">Edit</span></a>
-                <a href="/delete/{{ pet.id }}">Delete</a>
+                 <a href="{% url 'pet_delete' pet.id %}" class="btn btn-danger">Delete</a>
             </td>
         </tr>
         {% endfor %}

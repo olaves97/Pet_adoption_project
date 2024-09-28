@@ -8,6 +8,10 @@ from .quiz_functions import QuizManager
 
 from django.contrib.auth import login
 
+from django.urls import reverse_lazy
+from django.views.generic import DeleteView
+
+
 
 PARAMETERS = ['size', 'age', 'sex', 'breed', 'temperament', 'personality', 'kid_friendly', 'dog_friendly',
               'cat_friendly', 'neutered']
@@ -103,9 +107,7 @@ def create_a_record(request):
     return render(request, 'database_actions/create.html', {'formset': formset})
 
 
-def delete(request, pet_id):
-    pet = Pet.objects.get(id=pet_id)
-    pet.delete()
-    database_table = Pet.objects.all()
-    return render(request, 'moderator_dashboard.html', {'database_table': database_table})
-
+class PetDeleteView(DeleteView):
+    model = Pet
+    template_name = 'pet_confirm_delete.html'
+    success_url = reverse_lazy('moderator_dashboard')
