@@ -11,9 +11,11 @@ The page contains four tabs:
 - Home - home page
 - Quiz - quiz page with ten questions about preferences for the adopted pet (pet size, age, sex, breed, character, temperament, kids-friendly, dogs-friendly, cats-friendly, neutered)
 - Pets - a list of all available pets for adoption
-- Login - login page for users and moderators **[in progress]**
+- Login - login page for users and moderators 
 
-After answering the questions, a page appears with the three animals that best suit users' preferences.
+Moderators have an additional view and ability to add/edit/delete records from the pets database (CRUD).
+
+After answering the questions from the Quiz, a page appears with the three animals that best suit users' preferences.
 
 
 ## Used technologies
@@ -25,9 +27,8 @@ Used technologies:
 - HTML, Bootstrap
 
 ## In progress
-The login page allows users and moderators to log in.
-Moderators will have an additional view and ability to add/edit/delete records from the pets database (CRUD).
+Tests
 
 ## TO DO
-Tests are planned and everything will be placed on the cloud. 
+Everything will be placed on the cloud. 
 Planned use of Docker.
