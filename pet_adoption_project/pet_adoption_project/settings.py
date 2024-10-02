@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'pet_adoption_app',
     'crispy_forms',
     'crispy_bootstrap5',
+    'rest_framework',
 ]
 
 

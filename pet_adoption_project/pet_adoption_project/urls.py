@@ -34,4 +34,5 @@ urlpatterns = [
     path('create/', views.create_a_record, name='create'),
     path('pet/edit/<int:pet_id>', views.edit, name='edit'),
     path('pet/delete/<int:pk>', PetDeleteView.as_view(), name='pet_delete'),
+    path('', include('api.urls'))
 ]
