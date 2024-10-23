@@ -43,7 +43,7 @@ class TooFewAnswers(Exception):
     pass
 
 
-@require_http_methods(["GET"])
+@require_http_methods(["GET", "POST"])
 def submit_form(request):
     responses = QuizManager().prepare_a_list_of_responses(request)
 
