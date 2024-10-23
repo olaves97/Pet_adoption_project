@@ -1,3 +1,4 @@
+from django.contrib.auth.models import Group, User
 from django.test import TestCase
 from django.urls import reverse, resolve
 
@@ -13,6 +14,11 @@ class TestUrls(TestCase):
                                  temperament='Calm', personality='Distant', kid_friendly='Y', dog_friendly='Y',
                                  cat_friendly='Y', neutered='N', submitter='Grace Hall',
                                  submission_date='2022-04-18 07:00')
+
+        self.moderator_group = Group.objects.create(name='Moderators')
+        self.moderator = User.objects.create_user(username='moderator', password='password')
+        self.moderator.groups.add(self.moderator_group)
+        self.client.login(username='moderator', password='password')
 
     def test_blank_url_is_resolved(self):
         url = reverse('home')
@@ -61,6 +67,7 @@ class TestUrls(TestCase):
         self.assertEquals(resolve(url).func, edit)
 
     def test_invalid_edit_url_is_resolved(self):
+        self.client.login(username='moderator', password='password')
         pet_id = 9999
         url = reverse('edit', args=[pet_id])
         response = self.client.get(url)

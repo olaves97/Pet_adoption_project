@@ -77,7 +77,7 @@ def sign_up(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect('/home')
+            return redirect('/home/')
     else:
         form = RegisterForm()
 
@@ -85,13 +85,14 @@ def sign_up(request):
 
 
 @require_http_methods(["GET"])
-@user_passes_test(lambda u: u.groups.filter(name='Moderators').exists())
+@user_passes_test(lambda u: u.groups.filter(name='Moderators').exists(), login_url='/login/')
 def moderator_dashboard(request):
     database_table = Pet.objects.all()
     return render(request, 'moderator_dashboard.html', {'database_table': database_table})
 
 
 @require_http_methods(["POST", "GET"])
+@user_passes_test(lambda u: u.groups.filter(name='Moderators').exists(), login_url='/login/')
 def edit(request, pet_id):
     pet = get_object_or_404(Pet, pk=pet_id)
     if request.method == "POST":
@@ -106,6 +107,7 @@ def edit(request, pet_id):
 
 
 @require_http_methods(["POST", "GET"])
+@user_passes_test(lambda u: u.groups.filter(name='Moderators').exists(), login_url='/login/')
 def create_a_record(request):
     if request.method == "POST":
         formset = PetInDatabase(request.POST)
