@@ -12,24 +12,26 @@ class TestViews(TestCase):
 
     def setUp(self):
         self.client = Client()
-        self.pet1 = Pet.objects.create(id=1, name='Buddy', species='dog', breed='', age=1, sex='M', size='Medium',
-                                      temperament='Calm', personality='Distant', kid_friendly='Y', dog_friendly='Y',
-                                      cat_friendly='Y', neutered='N', submitter='Grace Hall',
+        self.pet1 = Pet.objects.create(id=1, name='Buddy', species='dog', breed='', age=1, sex='Male', size='Medium',
+                                      temperament='Calm', personality='Distant', kid_friendly='Y', dog_friendly='Yes',
+                                      cat_friendly='Yes', neutered='No', submitter='Grace Hall',
                                       submission_date='2022-04-18 07:00')
 
-        self.pet2 = Pet.objects.create(id=2, name='Fox', species='dog', breed='', age=2, sex='M', size='Medium',
-                                      temperament='Calm', personality='Distant', kid_friendly='Y', dog_friendly='Y',
-                                      cat_friendly='Y', neutered='N', submitter='Grace Hall',
+        self.pet2 = Pet.objects.create(id=2, name='Fox', species='dog', breed='', age=2, sex='Male', size='Medium',
+                                      temperament='Calm', personality='Distant', kid_friendly='Yes', dog_friendly='Yes',
+                                      cat_friendly='Yes', neutered='No', submitter='Grace Hall',
                                       submission_date='2022-04-18 07:00')
 
-        self.pet3 = Pet.objects.create(id=3, name='Buddy', species='dog', breed='', age=3, sex='M', size='Medium',
-                                      temperament='Calm', personality='Distant', kid_friendly='Y', dog_friendly='Y',
-                                      cat_friendly='Y', neutered='N', submitter='Grace Hall',
+        self.pet3 = Pet.objects.create(id=3, name='Buddy', species='dog', breed='', age=3, sex='Male', size='Medium',
+                                      temperament='Calm', personality='Distant', kid_friendly='Yes', dog_friendly='Yes',
+                                      cat_friendly='Yes', neutered='No', submitter='Grace Hall',
                                       submission_date='2022-04-18 07:00')
 
         self.moderator_group = Group.objects.create(name='Moderators')
         self.moderator_user = User.objects.create_user(username='moderator', password='password')
         self.moderator_user.groups.add(self.moderator_group)
+
+        self.regular_user = User.objects.create_user(username='regular_user', password='password')
 
     def test_home_GET(self):
         response = self.client.get(reverse('home'))
@@ -163,7 +165,6 @@ class TestViews(TestCase):
 
     def test_moderator_dashboard_access_for_non_moderator(self):
 
-        regular_user = User.objects.create_user(username='regular_user', password='password')
         self.client.login(username='regular_user', password='password')
         response = self.client.get(reverse('moderator_dashboard'))
 
@@ -176,7 +177,7 @@ class TestViews(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, '/login/?next=/moderator/')
 
-    def test_edit_a_pet_record_by_moderator(self):
+    def test_edit_a_pet_view_for_moderator(self):
 
         self.client.login(username='moderator', password='password')
         response = self.client.get(reverse('edit', args=[self.pet1.id]))
@@ -184,8 +185,149 @@ class TestViews(TestCase):
 
         self.assertTemplateUsed(response, 'database_actions/edit.html')
 
-        # database_table = response.context['database_table']
-        # self.assertEqual(database_table.count(), 3)
-        # self.assertEqual(database_table[0].name, self.pet1.name)
-        # self.assertEqual(database_table[1].name, self.pet2.name)
-        # self.assertEqual(database_table[2].name, self.pet3.name)
+    def test_edition_of_a_pet_by_moderator(self):
+        self.client.login(username='moderator', password='password')
+        formset = {
+            'name': 'New Name',
+            'species': 'dog',
+            'breed': '',
+            'age': '1',
+            'sex': 'Male',
+            'size': 'Medium',
+            'temperament': 'Calm',
+            'personality': 'Distant',
+            'kid_friendly': 'Yes',
+            'dog_friendly': 'Yes',
+            'cat_friendly': 'Yes',
+            'neutered': 'No',
+            'submitter': 'Grace Hall',
+            'submission_date':'2022-04-18 07:00',
+        }
+        response = self.client.post(reverse('edit', args=[self.pet1.id]), data = formset)
+
+        self.assertEquals(response.status_code, 302)
+        self.assertRedirects(response, '/moderator/')
+
+        self.pet1.refresh_from_db()
+        self.assertEqual(self.pet1.name, 'New Name')
+
+    def test_edit_view_redirect_for_regular_user(self):
+        self.client.login(username='regular_user', password='password')
+        response = self.client.get(reverse('edit', args=[self.pet1.id]))
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, f'/login/?next=/pet/edit/{self.pet1.id}')
+
+    def test_edit_view_redirect_for_anonymous_user(self):
+        self.client.logout()
+        response = self.client.get(reverse('edit', args=[self.pet1.id]))
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, f'/login/?next=/pet/edit/{self.pet1.id}')
+
+    def test_edit_a_pet_view_returns_404_for_invalid_pet_id(self):
+
+        self.client.login(username='moderator', password='password')
+        response = self.client.get(reverse('edit', args=[9999]))
+        self.assertEqual(response.status_code, 404)
+
+    def test_create_a_pet_view_for_moderator(self):
+
+        self.client.login(username='moderator', password='password')
+        response = self.client.get(reverse('create'))
+        self.assertEqual(response.status_code, 200)
+
+        self.assertTemplateUsed(response, 'database_actions/create.html')
+
+    def test_creation_of_a_pet_by_moderator(self):
+        self.client.login(username='moderator', password='password')
+        formset = {
+            'name': 'New Dog',
+            'species': 'dog',
+            'breed': '',
+            'age': '10',
+            'sex': 'Male',
+            'size': 'Medium',
+            'temperament': 'Calm',
+            'personality': 'Distant',
+            'kid_friendly': 'Yes',
+            'dog_friendly': 'Yes',
+            'cat_friendly': 'Yes',
+            'neutered': 'No',
+            'submitter': 'Someone',
+            'submission_date':'2022-04-18 07:00',
+        }
+        response = self.client.post(reverse('create'), data = formset)
+        self.assertRedirects(response, '/moderator/')
+        self.assertTrue(Pet.objects.filter(name='New Dog').exists())
+
+    def test_create_a_record_with_invalid_data(self):
+        self.client.login(username='moderator', password='password')
+        formset = {
+            'name': 'Dog without age',
+            'species': 'dog',
+            'breed': '',
+            'age': '',
+            'sex': 'Male',
+            'size': 'Medium',
+            'temperament': 'Calm',
+            'personality': 'Distant',
+            'kid_friendly': 'Yes',
+            'dog_friendly': 'Yes',
+            'cat_friendly': 'Yes',
+            'neutered': 'No',
+            'submitter': 'Someone',
+            'submission_date':'2022-04-18 07:00',
+        }
+        response = self.client.post(reverse('create'), data = formset)
+        self.assertTemplateUsed(response, 'database_actions/create.html')
+
+        self.assertIn('formset', response.context)
+        errors = response.context['formset'].errors
+
+        self.assertIn('age', errors)
+        self.assertIn('This field is required.', errors['age'])
+
+        self.assertFalse(Pet.objects.filter(name='Dog without age').exists())
+
+    def test_create_view_redirect_for_regular_user(self):
+        self.client.login(username='regular_user', password='password')
+        response = self.client.get(reverse('create'))
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/login/?next=/create/')
+
+    def test_create_view_redirect_for_anonymous_user(self):
+        self.client.logout()
+        response = self.client.get(reverse('create'))
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/login/?next=/create/')
+
+    def test_delete_view_for_moderators(self):
+        self.client.login(username='moderator', password='password')
+        response = self.client.get(reverse('pet_delete', args=[self.pet1.id]))
+        self.assertEqual(response.status_code, 200)
+
+        self.assertTemplateUsed(response, 'pet_confirm_delete.html')
+
+    def test_delete_view_redirect_for_regular_user(self):
+        self.client.login(username='regular_user', password='password')
+        response = self.client.get(reverse('pet_delete', args=[self.pet1.id]))
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, f'/login/?next=/pet/delete/{self.pet1.id}')
+
+    def test_delete_view_redirect_for_anonymous_user(self):
+        self.client.logout()
+        response = self.client.get(reverse('pet_delete', args=[self.pet1.id]))
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, f'/login/?next=/pet/delete/{self.pet1.id}')
+
+    def test_delete_pet_as_moderator(self):
+        self.client.login(username='moderator', password='password')
+        self.assertTrue(Pet.objects.filter(id=self.pet1.id).exists())
+        response = self.client.post(reverse('pet_delete', args=[self.pet1.id]))
+        self.assertRedirects(response, '/moderator/')
+        self.assertFalse(Pet.objects.filter(id=self.pet1.id).exists())

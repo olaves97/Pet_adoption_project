@@ -99,7 +99,7 @@ def edit(request, pet_id):
         formset = PetInDatabase(request.POST, instance=pet)
         if formset.is_valid():
             formset.save()
-            return redirect('/moderator')
+            return redirect('/moderator/')
     else:
         formset = PetInDatabase(instance=pet)
 
@@ -113,13 +113,18 @@ def create_a_record(request):
         formset = PetInDatabase(request.POST)
         if formset.is_valid():
             formset.save()
-            return redirect('/moderator')
+            return redirect('/moderator/')
     else:
         formset = PetInDatabase()
     return render(request, 'database_actions/create.html', {'formset': formset})
 
 
-class PetDeleteView(DeleteView):
-    model = Pet
-    template_name = 'pet_confirm_delete.html'
-    success_url = reverse_lazy('moderator_dashboard')
+@user_passes_test(lambda u: u.groups.filter(name='Moderators').exists(), login_url='/login/')
+def pet_delete(request, pet_id):
+    pet = get_object_or_404(Pet, pk=pet_id)
+
+    if request.method == 'POST':
+        pet.delete()
+        return redirect('/moderator/')
+
+    return render(request, 'pet_confirm_delete.html', {'pet': pet})

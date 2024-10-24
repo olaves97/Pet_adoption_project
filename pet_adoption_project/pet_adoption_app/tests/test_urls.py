@@ -4,7 +4,7 @@ from django.urls import reverse, resolve
 
 from pet_adoption_app.models import Pet
 from pet_adoption_app.views import home, pets, quiz, pet_detail, submit_form, sign_up, moderator_dashboard, \
-    create_a_record, edit, PetDeleteView
+    create_a_record, edit, pet_delete
 
 
 class TestUrls(TestCase):
@@ -75,7 +75,7 @@ class TestUrls(TestCase):
 
     def test_delete_pet_url_is_resolved(self):
         url = reverse('pet_delete', args = [self.pet.id])
-        self.assertEquals(resolve(url).func.view_class, PetDeleteView)
+        self.assertEquals(resolve(url).func, pet_delete)
 
     def test_invalid_delete_url_is_resolved(self):
         pet_id = 9999
