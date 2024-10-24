@@ -9,9 +9,6 @@ from .quiz_functions import QuizManager
 
 from django.contrib.auth import login
 
-from django.urls import reverse_lazy
-from django.views.generic import DeleteView
-
 
 
 PARAMETERS = ['size', 'age', 'sex', 'breed', 'temperament', 'personality', 'kid_friendly', 'dog_friendly',
